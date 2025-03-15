@@ -38,12 +38,12 @@ else:
 
 ALLOWED_HOSTS = ["*"]
 
-issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
-if issuer_domain:
-    d = urlparse(issuer_domain).hostname
-    ALLOWED_HOSTS = [d]
-    CSRF_TRUSTED_ORIGINS = [issuer_domain]
-    CORS_ORIGIN_WHITELIST = [issuer_domain]
+# issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
+# if issuer_domain:
+#     d = urlparse(issuer_domain).hostname
+#     ALLOWED_HOSTS = [d]
+#     CSRF_TRUSTED_ORIGINS = [issuer_domain]
+#     CORS_ORIGIN_WHITELIST = [issuer_domain]
 
 
 # Application definition
