@@ -15,8 +15,8 @@ python manage.py initialize_db
 echo "Creating superuser"
 python manage.py init_admin
 
-echo "Collecting static"
-python manage.py collectstatic --noinput
+# echo "Collecting static"
+# python manage.py collectstatic --noinput
 
 # Start server
 echo "Starting server.."
