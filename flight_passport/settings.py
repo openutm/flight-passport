@@ -119,12 +119,7 @@ TEMPLATES = [
     },
 ]
 WHITENOISE_STATIC_PREFIX = "/static/"
-STORAGES = {
-    # ...
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+
 
 # Django Superuser
 
