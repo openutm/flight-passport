@@ -1,0 +1,13 @@
+.logo {
+    width: auto;
+    height: 60px;
+    display: inline-block;
+    margin: 0 0 10px;
+    vertical-align: middle;
+}
+
+.application-name {
+    font-size: 22px;
+    padding: 0 10px;
+    line-height: 20px;
+}
