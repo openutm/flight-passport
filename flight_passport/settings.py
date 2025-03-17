@@ -15,8 +15,8 @@ from urllib.parse import urlparse
 
 import dj_database_url
 from dotenv import find_dotenv, load_dotenv
-from collections import namedtuple
-from urllib.parse import urljoin, urlencode, urlparse, urlunparse
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
@@ -41,10 +41,6 @@ ALLOWED_HOSTS = ["*"]
 
 issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
 
-Components = namedtuple(
-    typename='Components', 
-    field_names=['scheme', 'netloc', 'url', 'path', 'query', 'fragment']
-)
 
 if issuer_domain:    
     d = urlparse(issuer_domain)
@@ -185,10 +181,10 @@ AUTHENTICATION_BACKENDS = (
     "oauth2_provider.backends.OAuth2Backend",
 )
 
-JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "Openskies")
+JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "OpenUTM")
 JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openskies.sh/")
 JWT_ID_ATTRIBUTE = "email"
-JWT_PRIVATE_KEY_OPENSKIES = os.environ.get("OIDC_RSA_PRIVATE_KEY")
+JWT_PRIVATE_KEY_OPENUTM = os.environ.get("OIDC_RSA_PRIVATE_KEY")
 
 JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
 
