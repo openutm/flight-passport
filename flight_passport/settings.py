@@ -15,7 +15,8 @@ from urllib.parse import urlparse
 
 import dj_database_url
 from dotenv import find_dotenv, load_dotenv
-
+from collections import namedtuple
+from urllib.parse import urljoin, urlencode, urlparse, urlunparse
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
@@ -38,12 +39,20 @@ else:
 
 ALLOWED_HOSTS = ["*"]
 
-# issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
-# if issuer_domain:
-#     d = urlparse(issuer_domain).hostname
-#     ALLOWED_HOSTS = [d]
-#     CSRF_TRUSTED_ORIGINS = [issuer_domain]
-#     CORS_ORIGIN_WHITELIST = [issuer_domain]
+issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
+
+Components = namedtuple(
+    typename='Components', 
+    field_names=['scheme', 'netloc', 'url', 'path', 'query', 'fragment']
+)
+
+if issuer_domain:    
+    d = urlparse(issuer_domain)
+    full_url = d.scheme +'://'+d.netloc
+    ALLOWED_HOSTS = [d.hostname]
+    CSRF_TRUSTED_ORIGINS= [full_url]    
+    CSRF_TRUSTED_ORIGINS = [full_url]
+    CORS_ORIGIN_WHITELIST = [full_url]
 
 
 # Application definition
