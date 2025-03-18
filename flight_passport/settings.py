@@ -32,10 +32,8 @@ if ENV_FILE:
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "_m7&5-z7-_+qw*^05k8lg1wrl8ip0or#&2-lxo-*=33d1(3ke9")
 # SECURITY WARNING: don't run with debug turned on in production!
 debug_mode = os.environ.get("ENABLE_DEBUG", 0)
-if int(debug_mode):
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG_MODE = bool(debug_mode)
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -135,18 +133,14 @@ SOCIALACCOUNT_AUTO_SIGNUP = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "Openskies Flight Passport Support <noreply@id.openskies.sh>")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
 LOGO_URL = "https://www.openskies.sh/images/logo.svg"
-APPLICATION_NAME = "Openskies Flight Passport"
+APPLICATION_NAME = "OpenUTM Flight Passport"
 
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_BACKEND = os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" if DEBUG_MODE else os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
