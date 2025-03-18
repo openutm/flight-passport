@@ -13,5 +13,5 @@ RUN chown -R django:django /app
 USER django:django
 
 COPY --chown=django:django . .
-
+RUN python manage.py collectstatic --no-input
 EXPOSE 9000
