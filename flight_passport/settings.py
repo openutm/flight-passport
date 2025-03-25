@@ -40,11 +40,11 @@ ALLOWED_HOSTS = ["*"]
 issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
 
 
-if issuer_domain:    
+if issuer_domain:
     d = urlparse(issuer_domain)
-    full_url = d.scheme +'://'+d.netloc
+    full_url = d.scheme + "://" + d.netloc
     ALLOWED_HOSTS = [d.hostname]
-    CSRF_TRUSTED_ORIGINS= [full_url]    
+    CSRF_TRUSTED_ORIGINS = [full_url]
     CSRF_TRUSTED_ORIGINS = [full_url]
     CORS_ORIGIN_WHITELIST = [full_url]
 
@@ -73,7 +73,7 @@ INSTALLED_APPS = [
 
 ANYMAIL = {
     # (exact settings here depend on your ESP...)
-    "MAILERSEND_API_TOKEN": os.environ.get("MAILERSEND_API_TOKEN", "000000"),  # Email service provider API Key    
+    "MAILERSEND_API_TOKEN": os.environ.get("MAILERSEND_API_TOKEN", "000000"),  # Email service provider API Key
     "RESEND_API_KEY": os.environ.get("RESEND_API_KEY", "000000"),
 }
 SITE_ID = 1
@@ -140,7 +140,11 @@ APPLICATION_NAME = "OpenUTM Flight Passport"
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" if DEBUG_MODE else os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG_MODE
+    else os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+)
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
