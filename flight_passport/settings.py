@@ -185,9 +185,7 @@ JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "OpenUTM")
 JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openskies.sh/")
 JWT_ID_ATTRIBUTE = "email"
 JWT_PRIVATE_KEY_OPENUTM = os.environ.get("OIDC_RSA_PRIVATE_KEY")
-
 JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
-
 SHOW_ADMIN = int(os.environ.get("SHOW_ADMIN", 0))
 
 # Internationalization
@@ -224,7 +222,7 @@ OAUTH2_PROVIDER = {
     "ID_TOKEN_EXPIRE_SECONDS": 3600,
     "OIDC_ISS_ENDPOINT": os.environ.get("JWT_ISSUER_DOMAIN", ""),
 }
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -247,50 +245,50 @@ if USING_DOCKER_COMPOSE:
 else:
     DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'filters': {
-#         'require_debug_true': {
-#             '()': 'django.utils.log.RequireDebugTrue',
-#         }
-#     },
-#     'formatters': {
-#         'verbose': {
-#         'format': '%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s'
-#         },
-#         'simple': {
-#             'format': '%(levelname)s %(message)s'
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'filters': ['require_debug_true'],
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'level': 'INFO',
-#             'handlers': ['console'],
-#         },
-#         'oauth2_provider': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#         'oauthlib': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#         'myapp': {
-#             'level': 'INFO',
-#             'handlers': ['console'],
-#         },
-#         'oauth': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#     }
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'formatters': {
+        'verbose': {
+        'format': '%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'oauth2_provider': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'oauthlib': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'vault': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'oauth': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    }
+}
