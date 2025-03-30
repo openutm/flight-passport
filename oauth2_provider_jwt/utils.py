@@ -75,7 +75,7 @@ def decode_jwt(jwt_value):
     # Add padding to the payload if necessary and decode it
     payload_enc = payload_enc + "=" * (-len(payload_enc) % 4)
     try:
-        payload = json.loads(base64.urlsafe_b64decode(payload_enc).decode("utf-8"))
+        json.loads(base64.urlsafe_b64decode(payload_enc).decode("utf-8"))
     except (ValueError, json.JSONDecodeError) as e:
         raise jwt.InvalidTokenError("Invalid JWT payload") from e
 
@@ -99,6 +99,7 @@ def decode_jwt(jwt_value):
         raise jwt.InvalidTokenError("Failed to decode JWT") from e
 
     return decoded
+
 
 def decode_jwt_user_info(jwt_value):
     """

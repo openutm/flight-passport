@@ -1,11 +1,9 @@
-import ast
 import json
 import logging
 
 try:
-    from urllib.parse import parse_qs, urlencode, urlparse
+    from urllib.parse import parse_qs, urlparse
 except ImportError:
-    from urllib import urlencode  # noqa
     from urlparse import urlparse, parse_qs
 
 from django.conf import settings
@@ -61,8 +59,8 @@ class TokenView(views.TokenView):
         token = get_access_token_model().objects.get(token=content["access_token"])
         extra_data = self._enrich_payload(request, payload_enricher, content, token, request_params)
 
-        id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
-        id_value = self._get_id_value(token, id_attribute)
+        # id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
+        # id_value = self._get_id_value(token, id_attribute)
 
         payload = generate_payload(issuer, content["expires_in"], **extra_data)
 
@@ -132,7 +130,7 @@ class TokenView(views.TokenView):
             return True
         else:
             return False
-        
+
     def post(self, request, *args, **kwargs):
         response = super(TokenView, self).post(request, *args, **kwargs)
 

@@ -7,7 +7,7 @@ __version__ = "2.2.1"
 
 try:
     dj_version = StrictVersion(django.get_version())
-except:
+except Exception:
     dj_version = StrictVersion("1.10")
 
 

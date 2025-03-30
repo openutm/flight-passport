@@ -1,5 +1,5 @@
 # from .settings import oauth2_settings
-from django.conf import settings
+# from django.conf import settings
 
 
 class BaseScopes(object):
@@ -38,6 +38,7 @@ class BaseScopes(object):
 class PassportScopes(BaseScopes):
     def get_all_scopes(self):
         return {"openid": "OpenID Connect scope", "profile": "OpenID profile"}
+
     def get_available_scopes(self, application=None, request=None, *args, **kwargs):
         available_scopes = {"openid", "profile"}  # Use a set to avoid duplicates
 

@@ -16,7 +16,6 @@ from urllib.parse import urlparse
 import dj_database_url
 from dotenv import find_dotenv, load_dotenv
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
@@ -139,7 +138,9 @@ LOGO_URL = "https://www.openskies.sh/images/logo.svg"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 APPLICATION_NAME = "OpenUTM Flight Passport"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
-if DEBUG_MODE or DEFAULT_FROM_EMAIL == "__ADD_A_VALID_EMAIL_ADDRESS_TO_ENABLE_EMAIL_NOTIFICATIONS_VIA_ESP__": # the DEFAULT_FROM_EMAIL is used in deployment production scripts 
+if (
+    DEBUG_MODE or DEFAULT_FROM_EMAIL == "__ADD_A_VALID_EMAIL_ADDRESS_TO_ENABLE_EMAIL_NOTIFICATIONS_VIA_ESP__"
+):  # the DEFAULT_FROM_EMAIL is used in deployment production scripts
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
     EMAIL_BACKEND = os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
