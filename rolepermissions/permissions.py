@@ -87,7 +87,7 @@ def grant_permission(user, permission_name):
             user.user_permissions.add(permission)
             return
 
-    raise RolePermissionScopeException("This permission isn't in the scope of " "any of this user's roles.")
+    raise RolePermissionScopeException("This permission isn't in the scope of any of this user's roles.")
 
 
 def revoke_permission(user, permission_name):
@@ -106,4 +106,4 @@ def revoke_permission(user, permission_name):
             user.user_permissions.remove(permission)
             return
 
-    raise RolePermissionScopeException("This permission isn't in the scope of " "any of this user's roles.")
+    raise RolePermissionScopeException("This permission isn't in the scope of any of this user's roles.")

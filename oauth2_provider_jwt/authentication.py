@@ -132,7 +132,7 @@ class JWTAuthentication(BaseAuthentication):
             msg = "Invalid Authorization header. No credentials provided."
             raise exceptions.AuthenticationFailed(msg)
         elif len(auth) > 2:
-            msg = "Invalid Authorization header. Credentials string " "should not contain spaces."
+            msg = "Invalid Authorization header. Credentials string should not contain spaces."
             raise exceptions.AuthenticationFailed(msg)
 
         jwt_value = auth[1]

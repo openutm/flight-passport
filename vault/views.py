@@ -4,8 +4,9 @@ import re
 import jwt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.core.serializers import serialize
-from django.core.serializers.json import DjangoJSONEncoder
+
+# from django.core.serializers import serialize
+# from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -60,7 +61,7 @@ def get_user(request):
     except jwt.DecodeError:
         msg = "Error decoding signature."
         raise exceptions.AuthenticationFailed(msg)
-    except jwt.InvalidTokenError as je:
+    except jwt.InvalidTokenError:
         raise exceptions.AuthenticationFailed()
     email = payload["sub"]
 

@@ -1,6 +1,6 @@
 from django.conf import settings as settings
 from django.contrib.sites.models import Site
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
