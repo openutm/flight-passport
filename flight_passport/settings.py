@@ -130,21 +130,19 @@ WSGI_APPLICATION = "flight_passport.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 SOCIALACCOUNT_AUTO_SIGNUP = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {
+    "email",
+}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
 LOGO_URL = "https://www.openskies.sh/images/logo.svg"
-APPLICATION_NAME = "OpenUTM Flight Passport"
-
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
-EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
-    if DEBUG_MODE
-    else os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-)
+APPLICATION_NAME = "OpenUTM Flight Passport"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
+if DEBUG_MODE or DEFAULT_FROM_EMAIL == "__ADD_A_VALID_EMAIL_ADDRESS_TO_ENABLE_EMAIL_NOTIFICATIONS_VIA_ESP__": # the DEFAULT_FROM_EMAIL is used in deployment production scripts 
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -182,7 +180,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "OpenUTM")
-JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openskies.sh/")
+JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openutm.net/")
 JWT_ID_ATTRIBUTE = "email"
 JWT_PRIVATE_KEY_OPENUTM = os.environ.get("OIDC_RSA_PRIVATE_KEY")
 JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
@@ -246,49 +244,38 @@ else:
     DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
         }
     },
-    'formatters': {
-        'verbose': {
-        'format': '%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s'
+    "formatters": {
+        "verbose": {"format": "%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s"},
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {"console": {"level": "DEBUG", "filters": ["require_debug_true"], "class": "logging.StreamHandler", "formatter": "verbose"}},
+    "loggers": {
+        "django.db.backends": {
+            "level": "INFO",
+            "handlers": ["console"],
         },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
+        "oauth2_provider": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+        "oauthlib": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+        "vault": {
+            "level": "INFO",
+            "handlers": ["console"],
+        },
+        "oauth": {
+            "level": "DEBUG",
+            "handlers": ["console"],
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'INFO',
-            'handlers': ['console'],
-        },
-        'oauth2_provider': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-        'oauthlib': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-        'vault': {
-            'level': 'INFO',
-            'handlers': ['console'],
-        },
-        'oauth': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-    }
 }
