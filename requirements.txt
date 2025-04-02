@@ -1,4 +1,4 @@
-Django==5.1.7
+Django==5.1.8
 python-dotenv==1.1.0
 cryptography==44.0.0
 pyjwt==2.10.1
