@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 from django.views.generic import DetailView
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.mixins import HasPermissionsMixin, HasRoleMixin
 from rolepermissions.roles import AbstractUserRole, RolesManager
@@ -58,7 +58,7 @@ class RoleOverhiddenRedirectView(HasRoleMixin, DetailView):
 
 class HasRoleDecoratorTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 
@@ -139,7 +139,7 @@ class PermissionOverhiddenRedirectView(HasPermissionsMixin, DetailView):
 
 class HasPermissionDecoratorTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 

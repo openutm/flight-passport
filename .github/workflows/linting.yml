@@ -13,7 +13,6 @@ jobs:
       - uses: codespell-project/actions-codespell@v2
         with:
           ignore_words_file: .codespellignore
-          exclude_file: "**/redis.conf"
   pylint:
     runs-on: ubuntu-latest
     steps:

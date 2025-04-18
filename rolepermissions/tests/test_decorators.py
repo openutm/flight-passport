@@ -6,7 +6,7 @@ from django.test.client import RequestFactory
 from django.test.utils import override_settings
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.decorators import has_permission_decorator, has_role_decorator
 from rolepermissions.roles import AbstractUserRole
@@ -52,7 +52,7 @@ class MultipleHasRoleDetailView(DetailView):
 
 class HasRoleDecoratorTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 
@@ -134,7 +134,7 @@ class RoleOverhiddenRedirectView(DetailView):
 
 class HasPermissionDecoratorTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 
@@ -169,7 +169,7 @@ class HasPermissionDecoratorTests(TestCase):
 )
 class RedirectToLoginTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 
@@ -213,7 +213,7 @@ class RedirectToLoginTests(TestCase):
 )
 class NotRedirectToLoginTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         self.factory = RequestFactory()
 

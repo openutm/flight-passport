@@ -44,6 +44,7 @@ dependencies = [
 dev = [
     "bandit>=1.8.3",
     "codespell>=2.4.1",
+    "model-bakery>=1.20.4",
     "pre-commit>=4.2.0",
     "pylint-django>=2.6.1",
     "pylint-pytest>=1.1.8",
@@ -60,12 +61,9 @@ build-backend = "hatchling.build"
 # packages = ["."]
 
 [tool.codespell]
-skip = ["**/redis.conf", "uv.lock"]
+skip = ["uv.lock"]
 ignore-words = ".codespellignore"
 quiet-level = 2
-
-[tool.pylint]
-load-plugins = "pylint_pytest"
 
 [tool.pylint.format]
 max-line-length = 150

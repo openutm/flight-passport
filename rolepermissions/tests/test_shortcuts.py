@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.checkers import has_permission
 from rolepermissions.exceptions import RoleDoesNotExist, RolePermissionScopeException
@@ -53,7 +53,7 @@ class ShoRole4(AbstractUserRole):
 
 class AssignRoleTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
     def test_assign_role(self):
         user = self.user
@@ -106,7 +106,7 @@ class RemoveRoleTests(TestCase):
         }
 
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
     def test_remove_role_from_user(self):
         assign_role(self.user, self.Doctor)
@@ -368,7 +368,7 @@ class RemoveRoleTests(TestCase):
 
 class ClearRolesTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
     def test_clear_roles(self):
         user = self.user
@@ -384,7 +384,7 @@ class ClearRolesTests(TestCase):
 
 class GetUserRoleTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
     def test_returns_list(self):
         user = self.user
@@ -430,7 +430,7 @@ class GetUserRoleTests(TestCase):
         assign_role(user, ShoRole3)
         assign_role(user, ShoRole4)
 
-        other_group = mommy.make(Group)
+        other_group = baker.make(Group)
         user.groups.add(other_group)
 
         self.assertNotIn(other_group, get_user_roles(user))
@@ -467,7 +467,7 @@ class GetUserRoleTests(TestCase):
 
 class AvailablePermStatusTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
         self.user_role = ShoRole2.assign_role_to_user(self.user)
 
     def test_permission_hash(self):
@@ -508,7 +508,7 @@ class AvailablePermNamesTests(TestCase):
         self.assertEqual(set(perm_names), {p for p, has_perm in perm_hash.items() if has_perm})
 
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
         self.user_role = ShoRole2.assign_role_to_user(self.user)
 
     def test_permission_names(self):
@@ -546,7 +546,7 @@ class AvailablePermNamesTests(TestCase):
 
 class GrantPermissionTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
         self.user_role = ShoRole2.assign_role_to_user(self.user)
 
     def test_grant_permission(self):
@@ -579,7 +579,7 @@ class GrantPermissionTests(TestCase):
 
 class RevokePermissionTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
         self.user_role = ShoRole2.assign_role_to_user(self.user)
 
     def test_revoke_permission(self):
