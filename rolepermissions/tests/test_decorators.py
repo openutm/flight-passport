@@ -29,7 +29,7 @@ class DecRole2(AbstractUserRole):
 class HasRoleDetailView(DetailView):
     @method_decorator(has_role_decorator("dec_role1"))
     def dispatch(self, request, *args, **kwargs):
-        return super(HasRoleDetailView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return True
@@ -41,7 +41,7 @@ class HasRoleDetailView(DetailView):
 class MultipleHasRoleDetailView(DetailView):
     @method_decorator(has_role_decorator(["dec_role1", DecRole2]))
     def dispatch(self, request, *args, **kwargs):
-        return super(MultipleHasRoleDetailView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return True
@@ -68,7 +68,7 @@ class HasRoleDecoratorTests(TestCase):
 
         response = HasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_does_not_have_allowed_role_to_view(self):
         user = self.user
@@ -87,19 +87,19 @@ class HasRoleDecoratorTests(TestCase):
 
         response = MultipleHasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         DecRole1.assign_role_to_user(user)
 
         response = MultipleHasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
 
 class HasPermissionDetailView(DetailView):
     @method_decorator(has_permission_decorator("permission2"))
     def dispatch(self, request, *args, **kwargs):
-        return super(HasPermissionDetailView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return True
@@ -111,7 +111,7 @@ class HasPermissionDetailView(DetailView):
 class PermissionOverhiddenRedirectView(DetailView):
     @method_decorator(has_permission_decorator("permission2", redirect_to_login=False))
     def dispatch(self, request, *args, **kwargs):
-        return super(PermissionOverhiddenRedirectView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return True
@@ -123,7 +123,7 @@ class PermissionOverhiddenRedirectView(DetailView):
 class RoleOverhiddenRedirectView(DetailView):
     @method_decorator(has_role_decorator("permission2", redirect_to_login=False))
     def dispatch(self, request, *args, **kwargs):
-        return super(RoleOverhiddenRedirectView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return True
@@ -150,7 +150,7 @@ class HasPermissionDecoratorTests(TestCase):
 
         response = HasPermissionDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_permission_denied(self):
         user = self.user
@@ -182,7 +182,7 @@ class RedirectToLoginTests(TestCase):
 
         response = HasPermissionDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn("/login/", response["Location"])
 
     def test_permision_overhiding_setting(self):
@@ -196,7 +196,7 @@ class RedirectToLoginTests(TestCase):
 
         response = HasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn("/login/", response["Location"])
 
     def test_role_overhiding_setting(self):

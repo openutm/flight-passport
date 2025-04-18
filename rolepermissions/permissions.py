@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from rolepermissions.exceptions import (
     CheckerNotRegistered,
     RolePermissionScopeException,
@@ -7,7 +5,7 @@ from rolepermissions.exceptions import (
 from rolepermissions.roles import get_or_create_permission, get_user_roles
 
 
-class PermissionsManager(object):
+class PermissionsManager:
     _checkers = {}
 
     @classmethod
@@ -67,7 +65,7 @@ def available_perm_names(user):
        No side-effects; permissions are not created in DB as side-effect.
     """
     roles = get_user_roles(user)
-    perm_names = set(p for role in roles for p in role.permission_names_list())
+    perm_names = {p for role in roles for p in role.permission_names_list()}
     return [p.codename for p in user.user_permissions.all() if p.codename in perm_names] if roles else []  # e.g., user == None
 
 
@@ -87,7 +85,7 @@ def grant_permission(user, permission_name):
             user.user_permissions.add(permission)
             return
 
-    raise RolePermissionScopeException("This permission isn't in the scope of " "any of this user's roles.")
+    raise RolePermissionScopeException("This permission isn't in the scope of any of this user's roles.")
 
 
 def revoke_permission(user, permission_name):
@@ -106,4 +104,4 @@ def revoke_permission(user, permission_name):
             user.user_permissions.remove(permission)
             return
 
-    raise RolePermissionScopeException("This permission isn't in the scope of " "any of this user's roles.")
+    raise RolePermissionScopeException("This permission isn't in the scope of any of this user's roles.")

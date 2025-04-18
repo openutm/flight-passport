@@ -9,15 +9,15 @@ ROLEPERMISSIONS_REGISTER_ADMIN = getattr(settings, "ROLEPERMISSIONS_REGISTER_ADM
 UserModel = auth.get_user_model()
 
 
-class RolePermissionsUserAdminMixin(object):
+class RolePermissionsUserAdminMixin:
     """Must be mixed in with an UserAdmin class"""
 
     def save_related(self, request, form, formsets, change):
         user = UserModel.objects.get(pk=form.instance.pk)
-        old_user_roles = set(r.get_name() for r in roles.get_user_roles(user))
-        super(RolePermissionsUserAdminMixin, self).save_related(request, form, formsets, change)
+        old_user_roles = {r.get_name() for r in roles.get_user_roles(user)}
+        super().save_related(request, form, formsets, change)
 
-        new_user_groups = set(g.name for g in user.groups.all())
+        new_user_groups = {g.name for g in user.groups.all()}
 
         for role_name in old_user_roles - new_user_groups:  # roles removed from User's groups
             try:  # put the recently removed group back, let rolepermissions remove it...

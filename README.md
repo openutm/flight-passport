@@ -18,7 +18,7 @@ The upcoming standards being developed at ASTM, EuroCAE etc. on drones use JWT /
 While there are many authentication and identity providers that support OAuth 2.0 and OpenID / OpenID Connect Credentials, all of them have some limitations in the context of U-Space / UTM. As of February 2020, OAuth 2.0 and JavaScript Web Token (JWTs) as a way to authenticate and issue credentials are parts of upcoming UTM / U-Space standards (e.g. DSS). Commercial service providers may or may not suffice for all cases, therefore this project is developed to enable maximum flexibility and still issue secure JWT tokens. This project can be deployed on any cloud service provider (national or international) and can be customized in any way to suit local UTM / U-Space needs.
 
 ## Running locally / Deployment
-Refer to the [deployment](https://github.com/openutm/deployment) repository to see how you can deploy this server along with instructions and sample environment file. 
+Refer to the [deployment](https://github.com/openutm/deployment) repository to see how you can deploy this server along with instructions and sample environment file.
 
 ## Technical Details
 
@@ -38,7 +38,7 @@ Python 3 is required for this and install dependencies using `pip install -r req
 
 ### 3. Create Initial Database
 
-Use `python manage.py migrate` to create the initial database tables locally. It will use the default SQLLite.
+Use `python manage.py migrate` to create the initial database tables locally. It will use the default SQLite.
 
 ### 4. Create a Django administrator
 

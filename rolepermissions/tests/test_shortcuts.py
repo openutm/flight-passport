@@ -390,7 +390,7 @@ class GetUserRoleTests(TestCase):
         user = self.user
 
         user_roles = get_user_roles(user)
-        self.assertEquals(type(user_roles), type([]))
+        self.assertEqual(type(user_roles), type([]))
 
     def test_get_user_roles(self):
         user = self.user
@@ -505,7 +505,7 @@ class AvailablePermNamesTests(TestCase):
         perm_hash = available_perm_status(self.user)
         perm_names = available_perm_names(self.user)
 
-        self.assertEqual(set(perm_names), set(p for p, has_perm in perm_hash.items() if has_perm))
+        self.assertEqual(set(perm_names), {p for p, has_perm in perm_hash.items() if has_perm})
 
     def setUp(self):
         self.user = mommy.make(get_user_model())
@@ -615,13 +615,13 @@ class RetrieveRole(TestCase):
         pass
 
     def test_retrive_role1(self):
-        self.assertEquals(retrieve_role("sho_role1"), ShoRole1)
+        self.assertEqual(retrieve_role("sho_role1"), ShoRole1)
 
     def test_retrive_role2(self):
-        self.assertEquals(retrieve_role("sho_role2"), ShoRole2)
+        self.assertEqual(retrieve_role("sho_role2"), ShoRole2)
 
     def test_retrive_role3(self):
-        self.assertEquals(retrieve_role("sho_new_name"), ShoRole3)
+        self.assertEqual(retrieve_role("sho_new_name"), ShoRole3)
 
     def test_retrieve_unknowun_role(self):
         role = retrieve_role("unknowun_role")

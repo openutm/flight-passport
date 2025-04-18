@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django import template
 
 from rolepermissions.checkers import has_object_permission, has_permission, has_role

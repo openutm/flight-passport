@@ -1,22 +1,80 @@
-[tool.black]
-line-length = 150
-target-version = ['py310']
-force-exclude = '''
-/(
-  | migrations
-)/
-'''
+[project]
+name = "flight-passport"
+version = "0.1.0"
+authors = [{ name = "Hrishikesh Ballal", email = "hrishi@openskies.sh" }]
+description = "Flight Passport"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
 
-[tool.isort]
-profile = "black"
-skip = "migrations"
+keywords = ["Flight Passport"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+]
 
-[tool.ruff]
-line-length = 150
-target-version = "py310"
-exclude = ["migrations"]
+dependencies = [
+    "cryptography==44.0.1",
+    "dj-database-url==2.3.0",
+    "django==5.1.8",
+    "django-allauth==65.5.0",
+    "django-anymail[mailersend,resend]==12",
+    "django-cors-headers==4.6.0",
+    "django-cors-middleware==1.5.0",
+    "django-oauth-toolkit==3.0.1",
+    "djangorestframework==3.15.2",
+    "gunicorn==23.0.0",
+    "psycopg2-binary==2.9.10",
+    "pyjwt==2.10.1",
+    "python-dotenv==1.1.0",
+    "python-jose==3.4.0",
+    "wait-for-it==2.3.0",
+    "whitenoise==6.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.3",
+    "codespell>=2.4.1",
+    "pre-commit>=4.2.0",
+    "pylint-django>=2.6.1",
+    "pylint-pytest>=1.1.8",
+    "pyright>=1.1.398",
+    "pyupgrade>=3.19.1",
+    "ruff>=0.11.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# [tool.hatch.build.targets.wheel]
+# packages = ["."]
 
 [tool.codespell]
-skip = "./static/**"
+skip = ["**/redis.conf", "uv.lock"]
 ignore-words = ".codespellignore"
 quiet-level = 2
+
+[tool.pylint]
+load-plugins = "pylint_pytest"
+
+[tool.pylint.format]
+max-line-length = 150
+
+[tool.pylint."messages control"]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "unused-import",
+    "useless-import-alias",
+]

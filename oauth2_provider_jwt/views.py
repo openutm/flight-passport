@@ -34,7 +34,7 @@ class IncorrectAudience(Exception):
 
 class JWTAuthorizationView(views.AuthorizationView):
     def get(self, request, *args, **kwargs):
-        response = super(JWTAuthorizationView, self).get(request, *args, **kwargs)
+        response = super().get(request, *args, **kwargs)
 
         if request.GET.get("response_type", None) == "token" and response.status_code == 302:
             url = urlparse(response.url)
@@ -48,7 +48,7 @@ class JWTAuthorizationView(views.AuthorizationView):
                 }
                 jwt = TokenView()._get_access_token_jwt(request, content)
 
-                response = OAuth2ResponseRedirect("{}&access_token_jwt={}".format(response.url, jwt), response.allowed_schemes)
+                response = OAuth2ResponseRedirect(f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes)
         return response
 
 
@@ -122,7 +122,7 @@ class TokenView(views.TokenView):
     @staticmethod
     def _is_jwt_config_set():
         issuer = getattr(settings, "JWT_ISSUER", "")
-        private_key_name = "JWT_PRIVATE_KEY_{}".format(issuer.upper())
+        private_key_name = f"JWT_PRIVATE_KEY_{issuer.upper()}"
         private_key = getattr(settings, private_key_name, None)
         id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
         if issuer and private_key and id_attribute:
@@ -131,7 +131,7 @@ class TokenView(views.TokenView):
             return False
 
     def post(self, request, *args, **kwargs):
-        response = super(TokenView, self).post(request, *args, **kwargs)
+        response = super().post(request, *args, **kwargs)
 
         content = ast.literal_eval(response.content.decode("utf-8"))
         request_grant_type = request.POST.get("grant_type")
@@ -151,7 +151,7 @@ class TokenView(views.TokenView):
                     response.content = json.dumps(
                         {
                             "error": "invalid_request",
-                            "error_description": "App not configured correctly. " "Please set JWT_ID_ATTRIBUTE.",
+                            "error_description": "App not configured correctly. Please set JWT_ID_ATTRIBUTE.",
                         }
                     )
 
@@ -160,7 +160,7 @@ class TokenView(views.TokenView):
                     response.content = json.dumps(
                         {
                             "error": "invalid_request",
-                            "error_description": "Incorrect Audience. " "Please set the appropriate audience in the request.",
+                            "error_description": "Incorrect Audience. Please set the appropriate audience in the request.",
                         }
                     )
                 else:

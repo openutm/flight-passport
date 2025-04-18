@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source .venv/bin/activate
+
+sleep 5m
+
 echo Waiting for DBs...
 if ! wait-for-it --service db-passport:5432; then
     exit

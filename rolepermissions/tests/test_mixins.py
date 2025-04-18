@@ -74,7 +74,7 @@ class HasRoleDecoratorTests(TestCase):
 
         response = HasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_does_not_have_allowed_role_to_view(self):
         user = self.user
@@ -93,13 +93,13 @@ class HasRoleDecoratorTests(TestCase):
 
         response = MultipleHasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         MixRole1.assign_role_to_user(user)
 
         response = MultipleHasRoleDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(
         ROLEPERMISSIONS_REDIRECT_TO_LOGIN=True,
@@ -155,7 +155,7 @@ class HasPermissionDecoratorTests(TestCase):
 
         response = HasPermissionDetailView.as_view()(request)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_permission_denied(self):
         user = self.user

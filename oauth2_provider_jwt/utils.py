@@ -44,10 +44,10 @@ def encode_jwt(payload, headers=None):
     algorithm = getattr(settings, "JWT_ENC_ALGORITHM", "RS256")
     issuer_shortname = settings.JWT_ISSUER
 
-    private_key_name = "JWT_PRIVATE_KEY_{}".format(issuer_shortname.upper())
+    private_key_name = f"JWT_PRIVATE_KEY_{issuer_shortname.upper()}"
     private_key = getattr(settings, private_key_name, None)
     if not private_key:
-        raise ImproperlyConfigured("Missing setting {}".format(private_key_name))
+        raise ImproperlyConfigured(f"Missing setting {private_key_name}")
     encoded = jwt.encode(payload, private_key, algorithm=algorithm, headers=headers)
 
     # return encoded.decode("utf-8")

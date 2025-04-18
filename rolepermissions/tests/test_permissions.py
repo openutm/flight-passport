@@ -15,10 +15,10 @@ class PermissionsManagerTests(TestCase):
         PermissionsManager.register_checker("func_name", func)
 
         self.assertIn("func_name", PermissionsManager._checkers)
-        self.assertEquals(PermissionsManager._checkers["func_name"], func)
+        self.assertEqual(PermissionsManager._checkers["func_name"], func)
 
     def test_get_checkers(self):
-        self.assertEquals(PermissionsManager.get_checkers(), {})
+        self.assertEqual(PermissionsManager.get_checkers(), {})
 
     def test_retrieve_checker(self):
         def func():
@@ -26,7 +26,7 @@ class PermissionsManagerTests(TestCase):
 
         PermissionsManager.register_checker("func_name", func)
 
-        self.assertEquals(PermissionsManager.retrieve_checker("func_name"), func)
+        self.assertEqual(PermissionsManager.retrieve_checker("func_name"), func)
 
     def test_restore_unregistered_function(self):
         with self.assertRaises(CheckerNotRegistered):

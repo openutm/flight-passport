@@ -1,8 +1,9 @@
 from os import environ as env
 
-from allauth.account.adapter import DefaultAccountAdapter
 from django.forms import ValidationError
 from dotenv import find_dotenv, load_dotenv
+
+from allauth.account.adapter import DefaultAccountAdapter
 
 from . import constants
 
@@ -17,7 +18,7 @@ class PassportAccountAdapter(DefaultAccountAdapter):
         domain = email.split("@")[1]
         white_listed_domain = [i for i in DOMAIN_WHITELIST.split(";")]
 
-        if domain in white_listed_domain:            
+        if domain in white_listed_domain:
             return email
         else:
             raise ValidationError("You are restricted from registering. Please contact admin.")

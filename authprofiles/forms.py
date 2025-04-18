@@ -3,7 +3,7 @@ from allauth.account.forms import LoginForm, ResetPasswordForm, SignupForm
 
 class PassportSignUpForm(SignupForm):
     def __init__(self, *args, **kwargs):
-        super(PassportSignUpForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for fieldname, field in self.fields.items():
             input_type = field.widget.input_type
             if input_type not in ["checkbox"]:
@@ -12,7 +12,7 @@ class PassportSignUpForm(SignupForm):
 
 class PassportLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
-        super(PassportLoginForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for fieldname, field in self.fields.items():
             input_type = field.widget.input_type
             if input_type not in ["checkbox"]:
@@ -21,7 +21,7 @@ class PassportLoginForm(LoginForm):
 
 class ResetPasswordForm(ResetPasswordForm):
     def __init__(self, *args, **kwargs):
-        super(ResetPasswordForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for fieldname, field in self.fields.items():
             input_type = field.widget.input_type
             if input_type not in ["checkbox"]:

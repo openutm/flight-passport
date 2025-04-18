@@ -1,6 +1,5 @@
-from distutils.version import StrictVersion
-
 import django
+from distutils.version import StrictVersion
 
 __version__ = "2.2.1"
 
