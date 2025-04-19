@@ -129,14 +129,13 @@ WSGI_APPLICATION = "flight_passport.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 SOCIALACCOUNT_AUTO_SIGNUP = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
 LOGO_URL = "https://www.openskies.sh/images/logo.svg"
 APPLICATION_NAME = "OpenUTM Flight Passport"
 
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 EMAIL_BACKEND = (
