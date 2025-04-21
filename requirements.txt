@@ -1,6 +1,6 @@
 Django==5.1.8
 python-dotenv==1.1.0
-cryptography==44.0.0
+cryptography==44.0.1
 pyjwt==2.10.1
 python-jose==3.4.0
 django-oauth-toolkit==3.0.1
