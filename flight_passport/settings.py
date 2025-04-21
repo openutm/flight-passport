@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
 import os
 from urllib.parse import urlparse
 
@@ -19,7 +18,6 @@ from dotenv import find_dotenv, load_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -33,11 +31,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "_m7&5-z7-_+qw*^05k8lg1wrl8ip0o
 
 DEBUG_MODE = int(os.environ.get("ENABLE_DEBUG", 0))
 
-
 ALLOWED_HOSTS = ["*"]
 
 issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
-
 
 if issuer_domain:
     d = urlparse(issuer_domain)
@@ -46,7 +42,6 @@ if issuer_domain:
     CSRF_TRUSTED_ORIGINS = [full_url]
     CSRF_TRUSTED_ORIGINS = [full_url]
     CORS_ORIGIN_WHITELIST = [full_url]
-
 
 # Application definition
 
@@ -76,7 +71,6 @@ ANYMAIL = {
     "RESEND_API_KEY": os.environ.get("RESEND_API_KEY", "000000"),
 }
 SITE_ID = 1
-
 
 MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -116,8 +110,6 @@ TEMPLATES = [
     },
 ]
 WHITENOISE_STATIC_PREFIX = "/static/"
-
-
 # Django Superuser
 
 DJANGO_SUPERUSER_USERNAME = os.environ.get("DJANGO_SUPERUSER_USERNAME", "admin")
@@ -135,9 +127,9 @@ ACCOUNT_LOGIN_METHODS = {
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
 LOGO_URL = "https://www.openskies.sh/images/logo.svg"
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 APPLICATION_NAME = "OpenUTM Flight Passport"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openutm.net>")
 if (
     DEBUG_MODE or DEFAULT_FROM_EMAIL == "__ADD_A_VALID_EMAIL_ADDRESS_TO_ENABLE_EMAIL_NOTIFICATIONS_VIA_ESP__"
 ):  # the DEFAULT_FROM_EMAIL is used in deployment production scripts
@@ -152,7 +144,6 @@ ACCOUNT_FORMS = {
     "login": "authprofiles.forms.PassportLoginForm",
     "reset_password": "authprofiles.forms.ResetPasswordForm",
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -191,16 +182,10 @@ SHOW_ADMIN = int(os.environ.get("SHOW_ADMIN", 0))
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-# SCOPES_BACKEND_CLASS = 'authprofiles.scopes'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
