@@ -128,7 +128,7 @@ class CanTagTests(BaseTagTestCase):
         def can_print_stuff(role, user, clinic):
             return True
 
-        template = "{% can 'can_print_stuff' '' as can_print %}" "{% if can_print %}passed{% endif %}"
+        template = "{% can 'can_print_stuff' '' as can_print %}{% if can_print %}passed{% endif %}"
 
         context = {
             "user": user,
@@ -145,7 +145,7 @@ class CanTagTests(BaseTagTestCase):
         def can_print_stuff(role, user, clinic):
             return False
 
-        template = "{% can 'can_print_stuff' '' as can_print %}" "{% if can_print %}passed{% endif %}"
+        template = "{% can 'can_print_stuff' '' as can_print %}{% if can_print %}passed{% endif %}"
 
         context = {
             "user": user,

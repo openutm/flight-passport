@@ -1,5 +1,5 @@
 # from .settings import oauth2_settings
-from django.conf import settings
+# from django.conf import settings
 
 
 class BaseScopes(object):
@@ -40,17 +40,13 @@ class PassportScopes(BaseScopes):
         return {"openid": "OpenID Connect scope", "profile": "OpenID profile"}
 
     def get_available_scopes(self, application=None, request=None, *args, **kwargs):
-        available_scopes = ["openid", "profile"]
+        available_scopes = {"openid", "profile"}  # Use a set to avoid duplicates
+
         if application:
-            all_audiences = application.audience.all()
-            for api in all_audiences:
-                all_api_scopes = api.scopes.all()
-                for cur_scope in all_api_scopes:
-                    available_scopes.append(cur_scope.name)
+            for api in application.audience.all():
+                available_scopes.update(scope.name for scope in api.scopes.all())
 
-            # based on client class filter read / write scopes
-
-        return available_scopes
+        return list(available_scopes)  # Convert back to a list for the return value
 
     def get_default_scopes(self, application=None, request=None, *args, **kwargs):
         return []
