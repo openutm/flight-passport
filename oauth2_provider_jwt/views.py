@@ -17,18 +17,13 @@ from oauth2_provider.settings import oauth2_settings
 from .utils import encode_jwt, generate_payload
 
 # Create your views here.
-
-
 logger = logging.getLogger(__name__)
-
 
 class MissingIdAttribute(Exception):
     pass
 
-
 class IncorrectAudience(Exception):
     pass
-
 
 class JWTAuthorizationView(views.AuthorizationView):
     def get(self, request, *args, **kwargs):
@@ -59,9 +54,6 @@ class TokenView(views.TokenView):
         token = get_access_token_model().objects.get(token=content["access_token"])
         extra_data = self._enrich_payload(request, payload_enricher, content, token, request_params)
 
-        # id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
-        # id_value = self._get_id_value(token, id_attribute)
-
         payload = generate_payload(issuer, content["expires_in"], **extra_data)
 
         headers = self._get_jwt_headers()
@@ -81,10 +73,6 @@ class TokenView(views.TokenView):
 
         if "audience" in request_params:
             self._validate_audience(request, token, extra_data)
-
-        for param in ["flight_plan_id", "flight_operation_id", "plan_file_hash"]:
-            if param in request_params:
-                extra_data[param] = request.POST[param]
 
         return extra_data
 
