@@ -446,7 +446,7 @@ class GetUserRoleTests(TestCase):
         N = 3
         with self.assertNumQueries(N):  # One query (fetch roles) per call
             for i in range(N):
-                user_roles = get_user_roles(fetched_user)
+                get_user_roles(fetched_user)
 
     def test_queries_with_prefetch(self):
         user = self.user
@@ -459,7 +459,7 @@ class GetUserRoleTests(TestCase):
         N = 3
         with self.assertNumQueries(0):  # all data required is cached with fetched_user
             for i in range(N):
-                user_roles = get_user_roles(fetched_user)
+                get_user_roles(fetched_user)
 
     def tearDown(self):
         RolesManager._roles = {}
@@ -534,14 +534,14 @@ class AvailablePermNamesTests(TestCase):
         N = 3
         with self.assertNumQueries(2 * N):  # Two query (fetch roles, fetch permissions) per call
             for i in range(N):
-                perm_names = available_perm_names(fetched_user)
+                available_perm_names(fetched_user)
 
     def test_queries_with_prefetch(self):
         fetched_user = get_user_model().objects.prefetch_related("groups", "user_permissions").get(pk=self.user.pk)
         N = 3
         with self.assertNumQueries(0):  # all data required is cached with fetched_user
             for i in range(N):
-                perm_names = available_perm_names(fetched_user)
+                available_perm_names(fetched_user)
 
 
 class GrantPermissionTests(TestCase):

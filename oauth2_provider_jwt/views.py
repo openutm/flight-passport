@@ -1,12 +1,10 @@
-import ast
 import json
 import logging
 
 try:
-    from urllib.parse import parse_qs, urlencode, urlparse
+    from urllib.parse import parse_qs, urlparse
 except ImportError:
-    from urllib import urlencode  # noqa
-    from urlparse import urlparse, parse_qs
+    from urlparse import parse_qs, urlparse
 
 from django.conf import settings
 from django.utils.module_loading import import_string
@@ -19,8 +17,6 @@ from oauth2_provider.settings import oauth2_settings
 from .utils import encode_jwt, generate_payload
 
 # Create your views here.
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -54,70 +50,66 @@ class JWTAuthorizationView(views.AuthorizationView):
 
 class TokenView(views.TokenView):
     def _get_access_token_jwt(self, request, content):
-        extra_data = {}
-
         issuer = settings.JWT_ISSUER_DOMAIN
         payload_enricher = getattr(settings, "JWT_PAYLOAD_ENRICHER", None)
-        request_params = list(request.POST.keys())
+        request_params = request.POST.keys()
 
         token = get_access_token_model().objects.get(token=content["access_token"])
-        if payload_enricher:
-            fn = import_string(payload_enricher)
-            extra_data = fn(request)
-
-        if "scope" in content:
-            extra_data["scope"] = content["scope"]
-            extra_data["typ"] = "Bearer"
-
-        if "audience" in request_params:
-            requested_audience = request.POST["audience"]
-            audience_query = token.application.audience.all().only("identifier")
-            all_audience = [audience.identifier for audience in audience_query]
-            try:
-                assert requested_audience in all_audience
-            except AssertionError as ae:
-                raise IncorrectAudience()
-            else:
-                extra_data["aud"] = requested_audience
-
-        if "flight_plan_id" in request_params:
-            flight_plan_id = request.POST["flight_plan_id"]
-            extra_data["flight_plan_id"] = flight_plan_id
-
-        if "flight_operation_id" in request_params:
-            flight_operation_id = request.POST["flight_operation_id"]
-            extra_data["flight_operation_id"] = flight_operation_id
-
-        if "plan_file_hash" in request_params:
-            plan_file_hash = request.POST["plan_file_hash"]
-            extra_data["plan_file_hash"] = plan_file_hash
-
-        id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
-
-        if id_attribute:
-            token_user = token.user
-            try:
-                assert token_user is not None
-                id_value = getattr(token_user, id_attribute, None)
-                if not id_value:
-                    raise MissingIdAttribute()
-            except AssertionError as ae:
-                id_value = token.application.client_id + "@clients"
+        extra_data = self._enrich_payload(request, payload_enricher, content, token, request_params)
 
         payload = generate_payload(issuer, content["expires_in"], **extra_data)
 
-        if oauth2_settings.OIDC_RSA_PRIVATE_KEY:
-            key = jwk.JWK.from_pem(oauth2_settings.OIDC_RSA_PRIVATE_KEY.encode("utf8"))
-            kid = key.thumbprint()
-
-        else:
-            kid = "e28163ce-b86d-4145-8df3-c8dad2e0b601"
-
-        headers = {"kid": kid}
-
+        headers = self._get_jwt_headers()
         token = encode_jwt(payload, headers=headers)
 
         return token
+
+    def _enrich_payload(self, request, payload_enricher, content, token, request_params):
+        extra_data = {}
+
+        if payload_enricher:
+            fn = import_string(payload_enricher)
+            extra_data.update(fn(request))
+
+        if "scope" in content:
+            extra_data.update({"scope": content["scope"], "typ": "Bearer"})
+
+        if "audience" in request_params:
+            self._validate_audience(request, token, extra_data)
+
+        return extra_data
+
+    def _validate_audience(self, request, token, extra_data):
+        requested_audience = request.POST["audience"]
+        audience_query = token.application.audience.all().only("identifier")
+        all_audience = [audience.identifier for audience in audience_query]
+
+        if requested_audience not in all_audience:
+            raise IncorrectAudience()
+
+        extra_data["aud"] = requested_audience
+
+    def _get_id_value(self, token, id_attribute):
+        if not id_attribute:
+            return None
+
+        token_user = token.user
+        if token_user:
+            id_value = getattr(token_user, id_attribute, None)
+            if id_value:
+                return id_value
+
+        if not token_user:
+            return token.application.client_id + "@clients"
+
+        raise MissingIdAttribute()
+
+    def _get_jwt_headers(self):
+        if oauth2_settings.OIDC_RSA_PRIVATE_KEY:
+            key = jwk.JWK.from_pem(oauth2_settings.OIDC_RSA_PRIVATE_KEY.encode("utf8"))
+            return {"kid": key.thumbprint()}
+
+        return {"kid": "e28163ce-b86d-4145-8df3-c8dad2e0b601"}
 
     @staticmethod
     def _is_jwt_config_set():
@@ -133,38 +125,47 @@ class TokenView(views.TokenView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
-        content = ast.literal_eval(response.content.decode("utf-8"))
-        request_grant_type = request.POST.get("grant_type")
-        # Per the ASTM standards on UTM only the 'client_credentails' grant must be a JWT
-        if response.status_code == 200 and "access_token" in content:
-            if not TokenView._is_jwt_config_set():
-                logger.warning("Missing JWT configuration, skipping token build")
-            else:
-                try:
-                    token_raw = self._get_access_token_jwt(request, content)
-                    if not isinstance(token_raw, str):
-                        token_raw = token_raw.decode("utf-8")
-                    content["access_token"] = token_raw
+        if response.status_code != 200:
+            return response
 
-                except MissingIdAttribute:
-                    response.status_code = 400
-                    response.content = json.dumps(
-                        {
-                            "error": "invalid_request",
-                            "error_description": "App not configured correctly. Please set JWT_ID_ATTRIBUTE.",
-                        }
-                    )
+        try:
+            content = json.loads(response.content.decode("utf-8"))
+        except (ValueError, TypeError) as e:
+            logger.error(f"Failed to decode response content: {e}")
+            return response
 
-                except IncorrectAudience:
-                    response.status_code = 400
-                    response.content = json.dumps(
-                        {
-                            "error": "invalid_request",
-                            "error_description": "Incorrect Audience. Please set the appropriate audience in the request.",
-                        }
-                    )
-                else:
-                    content = json.dumps(content)
-                    response.content = content
+        if "access_token" not in content:
+            return response
 
+        if not TokenView._is_jwt_config_set():
+            logger.warning("Missing JWT configuration, skipping token build")
+            return response
+
+        try:
+            token_raw = self._get_access_token_jwt(request, content)
+            content["access_token"] = token_raw if isinstance(token_raw, str) else token_raw.decode("utf-8")
+        except MissingIdAttribute:
+            return self._build_error_response(
+                "invalid_request",
+                "App not configured correctly. Please set JWT_ID_ATTRIBUTE.",
+                status_code=400,
+            )
+        except IncorrectAudience:
+            return self._build_error_response(
+                "invalid_request",
+                "Incorrect Audience. Please set the appropriate audience in the request.",
+                status_code=400,
+            )
+        except Exception as e:
+            logger.error(f"Unexpected error while generating JWT: {e}")
+            return response
+
+        response.content = json.dumps(content)
         return response
+
+    @staticmethod
+    def _build_error_response(error, error_description, status_code=400):
+        return OAuth2ResponseRedirect(
+            json.dumps({"error": error, "error_description": error_description}),
+            status_code=status_code,
+        )

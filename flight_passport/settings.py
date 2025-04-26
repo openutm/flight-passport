@@ -20,7 +20,6 @@ from dotenv import find_dotenv, load_dotenv
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 ENV_FILE = find_dotenv()
@@ -33,11 +32,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "_m7&5-z7-_+qw*^05k8lg1wrl8ip0o
 
 DEBUG_MODE = int(os.environ.get("ENABLE_DEBUG", 0))
 
-
 ALLOWED_HOSTS = ["*"]
 
 issuer_domain = os.environ.get("JWT_ISSUER_DOMAIN", None)
-
 
 if issuer_domain:
     d = urlparse(issuer_domain)
@@ -46,7 +43,6 @@ if issuer_domain:
     CSRF_TRUSTED_ORIGINS = [full_url]
     CSRF_TRUSTED_ORIGINS = [full_url]
     CORS_ORIGIN_WHITELIST = [full_url]
-
 
 # Application definition
 
@@ -76,7 +72,6 @@ ANYMAIL = {
     "RESEND_API_KEY": os.environ.get("RESEND_API_KEY", "000000"),
 }
 SITE_ID = 1
-
 
 MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -116,8 +111,6 @@ TEMPLATES = [
     },
 ]
 WHITENOISE_STATIC_PREFIX = "/static/"
-
-
 # Django Superuser
 
 DJANGO_SUPERUSER_USERNAME = os.environ.get("DJANGO_SUPERUSER_USERNAME", "admin")
@@ -129,20 +122,21 @@ WSGI_APPLICATION = "flight_passport.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 SOCIALACCOUNT_AUTO_SIGNUP = False
-ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_LOGIN_METHODS = {
+    "email",
+}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openskies.sh>")
 LOGO_URL = "https://www.openskies.sh/images/logo.svg"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 APPLICATION_NAME = "OpenUTM Flight Passport"
-
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
-EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
-    if DEBUG_MODE
-    else os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-)
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openutm.net>")
+if (
+    DEBUG_MODE or DEFAULT_FROM_EMAIL == "__ADD_A_VALID_EMAIL_ADDRESS_TO_ENABLE_EMAIL_NOTIFICATIONS_VIA_ESP__"
+):  # the DEFAULT_FROM_EMAIL is used in deployment production scripts
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = os.environ.get("ESP_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -151,7 +145,6 @@ ACCOUNT_FORMS = {
     "login": "authprofiles.forms.PassportLoginForm",
     "reset_password": "authprofiles.forms.ResetPasswordForm",
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -180,28 +173,20 @@ AUTHENTICATION_BACKENDS = (
 )
 
 JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "OpenUTM")
-JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openskies.sh/")
+JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openutm.net/")
 JWT_ID_ATTRIBUTE = "email"
 JWT_PRIVATE_KEY_OPENUTM = os.environ.get("OIDC_RSA_PRIVATE_KEY")
-
 JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
-
 SHOW_ADMIN = int(os.environ.get("SHOW_ADMIN", 0))
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-# SCOPES_BACKEND_CLASS = 'authprofiles.scopes'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -222,7 +207,7 @@ OAUTH2_PROVIDER = {
     "ID_TOKEN_EXPIRE_SECONDS": 3600,
     "OIDC_ISS_ENDPOINT": os.environ.get("JWT_ISSUER_DOMAIN", ""),
 }
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -245,50 +230,39 @@ if USING_DOCKER_COMPOSE:
 else:
     DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'filters': {
-#         'require_debug_true': {
-#             '()': 'django.utils.log.RequireDebugTrue',
-#         }
-#     },
-#     'formatters': {
-#         'verbose': {
-#         'format': '%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s'
-#         },
-#         'simple': {
-#             'format': '%(levelname)s %(message)s'
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'filters': ['require_debug_true'],
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'level': 'INFO',
-#             'handlers': ['console'],
-#         },
-#         'oauth2_provider': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#         'oauthlib': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#         'myapp': {
-#             'level': 'INFO',
-#             'handlers': ['console'],
-#         },
-#         'oauth': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#     }
-# }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        }
+    },
+    "formatters": {
+        "verbose": {"format": "%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)d: %(message)s"},
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {"console": {"level": "DEBUG", "filters": ["require_debug_true"], "class": "logging.StreamHandler", "formatter": "verbose"}},
+    "loggers": {
+        "django.db.backends": {
+            "level": "INFO",
+            "handlers": ["console"],
+        },
+        "oauth2_provider": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+        "oauthlib": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+        "vault": {
+            "level": "INFO",
+            "handlers": ["console"],
+        },
+        "oauth": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+    },
+}
