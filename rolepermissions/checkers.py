@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import inspect
 
 from rolepermissions.permissions import PermissionsManager, available_perm_names

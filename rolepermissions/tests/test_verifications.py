@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.checkers import has_object_permission, has_permission, has_role
 from rolepermissions.permissions import register_object_checker
@@ -31,7 +31,7 @@ class VerRole3(AbstractUserRole):
 
 class HasRoleTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         VerRole1.assign_role_to_user(self.user)
 
@@ -73,7 +73,7 @@ class HasRoleTests(TestCase):
 
 class HasPermissionTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         VerRole1.assign_role_to_user(self.user)
 
@@ -95,7 +95,7 @@ class HasPermissionTests(TestCase):
         self.assertFalse(has_permission(user, "not_a_permission"))
 
     def test_user_with_no_role(self):
-        user = mommy.make(get_user_model())
+        user = baker.make(get_user_model())
 
         self.assertFalse(has_permission(user, "permission1"))
 
@@ -119,7 +119,7 @@ class HasPermissionTests(TestCase):
 
 class HasObjectPermissionTests(TestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         VerRole1.assign_role_to_user(self.user)
 
@@ -138,6 +138,6 @@ class HasObjectPermissionTests(TestCase):
         self.assertFalse(has_object_permission("obj_checker", user, False))
 
     def test_check_none_role_if_user_has_no_role(self):
-        user = mommy.make(get_user_model())
+        user = baker.make(get_user_model())
 
         self.assertTrue(has_object_permission("obj_checker", user, True))

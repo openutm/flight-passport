@@ -1,8 +1,9 @@
 from os import environ as env
 
-from allauth.account.adapter import DefaultAccountAdapter
 from django.forms import ValidationError
 from dotenv import find_dotenv, load_dotenv
+
+from allauth.account.adapter import DefaultAccountAdapter
 
 from . import constants
 

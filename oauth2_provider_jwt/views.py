@@ -4,7 +4,7 @@ import logging
 try:
     from urllib.parse import parse_qs, urlparse
 except ImportError:
-    from urlparse import urlparse, parse_qs
+    from urlparse import parse_qs, urlparse
 
 from django.conf import settings
 from django.utils.module_loading import import_string
@@ -19,15 +19,18 @@ from .utils import encode_jwt, generate_payload
 # Create your views here.
 logger = logging.getLogger(__name__)
 
+
 class MissingIdAttribute(Exception):
     pass
+
 
 class IncorrectAudience(Exception):
     pass
 
+
 class JWTAuthorizationView(views.AuthorizationView):
     def get(self, request, *args, **kwargs):
-        response = super(JWTAuthorizationView, self).get(request, *args, **kwargs)
+        response = super().get(request, *args, **kwargs)
 
         if request.GET.get("response_type", None) == "token" and response.status_code == 302:
             url = urlparse(response.url)
@@ -41,7 +44,7 @@ class JWTAuthorizationView(views.AuthorizationView):
                 }
                 jwt = TokenView()._get_access_token_jwt(request, content)
 
-                response = OAuth2ResponseRedirect("{}&access_token_jwt={}".format(response.url, jwt), response.allowed_schemes)
+                response = OAuth2ResponseRedirect(f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes)
         return response
 
 
@@ -111,7 +114,7 @@ class TokenView(views.TokenView):
     @staticmethod
     def _is_jwt_config_set():
         issuer = getattr(settings, "JWT_ISSUER", "")
-        private_key_name = "JWT_PRIVATE_KEY_{}".format(issuer.upper())
+        private_key_name = f"JWT_PRIVATE_KEY_{issuer.upper()}"
         private_key = getattr(settings, private_key_name, None)
         id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
         if issuer and private_key and id_attribute:
@@ -120,7 +123,7 @@ class TokenView(views.TokenView):
             return False
 
     def post(self, request, *args, **kwargs):
-        response = super(TokenView, self).post(request, *args, **kwargs)
+        response = super().post(request, *args, **kwargs)
 
         if response.status_code != 200:
             return response

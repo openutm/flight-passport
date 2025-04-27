@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, Permission
 from django.core.management import call_command
 from django.test import TestCase
 from django.utils.six import StringIO
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.admin import RolePermissionsUserAdminMixin
 from rolepermissions.roles import AbstractUserRole, get_user_roles
@@ -37,9 +37,9 @@ class UserAdminMixinTest(TestCase):
         pass
 
     def test_admin_save_related_syncs_roles(self):
-        user = mommy.make(get_user_model())
-        grp1 = mommy.make(Group)
-        grp2 = mommy.make(Group, name=AdminRole1.get_name())
+        user = baker.make(get_user_model())
+        grp1 = baker.make(Group)
+        grp2 = baker.make(Group, name=AdminRole1.get_name())
         user.groups.add(grp1)
         user.groups.add(grp2)
         form = self.FormMock(instance=user)
@@ -68,9 +68,9 @@ class SyncRolesTest(TestCase):
         self.assertNotIn("admin_perm2", permissions)
 
     def test_sync_user_role_permissions(self):
-        user = mommy.make(get_user_model())
-        grp1 = mommy.make(Group)
-        grp2 = mommy.make(Group, name=AdminRole1.get_name())
+        user = baker.make(get_user_model())
+        grp1 = baker.make(Group)
+        grp2 = baker.make(Group, name=AdminRole1.get_name())
         user.groups.add(grp1)
         user.groups.add(grp2)
         out = StringIO()
@@ -85,8 +85,8 @@ class SyncRolesTest(TestCase):
         self.assertNotIn("admin_perm2", user_permission_names)
 
     def test_sync_preserves_groups(self):
-        grp1 = mommy.make(Group)
-        grp2 = mommy.make(Group, name=AdminRole1.get_name())
+        grp1 = baker.make(Group)
+        grp2 = baker.make(Group, name=AdminRole1.get_name())
         out = StringIO()
         call_command("sync_roles", stdout=out)
         group_names = [group["name"] for group in Group.objects.all().values("name")]

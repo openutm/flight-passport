@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.template import Context, Template
 from django.test import TestCase
-from model_mommy import mommy
+from model_bakery import baker
 
 from rolepermissions.permissions import register_object_checker
 from rolepermissions.roles import AbstractUserRole
@@ -38,7 +38,7 @@ class BaseTagTestCase(TestCase):
 
 class HasRoleTests(BaseTagTestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         TemRole1.assign_role_to_user(self.user)
 
@@ -84,7 +84,7 @@ class HasRoleTests(BaseTagTestCase):
 
 class CanFilterTests(BaseTagTestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         TemRole1.assign_role_to_user(self.user)
 
@@ -117,7 +117,7 @@ class CanFilterTests(BaseTagTestCase):
 
 class CanTagTests(BaseTagTestCase):
     def setUp(self):
-        self.user = mommy.make(get_user_model())
+        self.user = baker.make(get_user_model())
 
         TemRole1.assign_role_to_user(self.user)
 

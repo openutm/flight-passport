@@ -16,7 +16,7 @@ class JwtToken(dict):
     """
 
     def __init__(self, payload):
-        super(JwtToken, self).__init__(**payload)
+        super().__init__(**payload)
 
     def __getattr__(self, item):
         return self[item]
@@ -150,7 +150,7 @@ class JWTAuthentication(BaseAuthentication):
             items = payload.items()
         for k, v in items:
             if k not in ("iat", "exp"):
-                request.session["jwt_{}".format(k)] = v
+                request.session[f"jwt_{k}"] = v
 
     def authenticate_header(self, _request):
         """
@@ -159,4 +159,4 @@ class JWTAuthentication(BaseAuthentication):
         authentication scheme should return `403 Permission Denied` responses.
         """
         auth_header_prefix = getattr(settings, "JWT_AUTH_HEADER_PREFIX", "JWT")
-        return '{0} realm="{1}"'.format(auth_header_prefix, self.www_authenticate_realm)
+        return f'{auth_header_prefix} realm="{self.www_authenticate_realm}"'

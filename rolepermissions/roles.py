@@ -1,11 +1,8 @@
-from __future__ import unicode_literals
-
 import inspect
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from six import add_metaclass
 
 from rolepermissions.exceptions import RoleDoesNotExist
 from rolepermissions.utils import camel_or_snake_to_title, camelToSnake
@@ -13,7 +10,7 @@ from rolepermissions.utils import camel_or_snake_to_title, camelToSnake
 registered_roles = {}
 
 
-class RolesManager(object):
+class RolesManager:
     def __iter__(cls):
         return iter(registered_roles)
 
@@ -33,14 +30,13 @@ class RolesManager(object):
 
 class RolesClassRegister(type):
     def __new__(cls, name, parents, dct):
-        role_class = super(RolesClassRegister, cls).__new__(cls, name, parents, dct)
+        role_class = super().__new__(cls, name, parents, dct)
         if object not in parents:
             registered_roles[role_class.get_name()] = role_class
         return role_class
 
 
-@add_metaclass(RolesClassRegister)
-class AbstractUserRole(object):
+class AbstractUserRole(metaclass=RolesClassRegister):
     @classmethod
     def get_name(cls):
         if hasattr(cls, "role_name"):
@@ -153,7 +149,7 @@ class AbstractUserRole(object):
         user_ct = ContentType.objects.get_for_model(get_user_model())
         permissions = list(Permission.objects.filter(content_type=user_ct, codename__in=permission_names).all())
 
-        missing_permissions = set(permission_names) - set((p.codename for p in permissions))
+        missing_permissions = set(permission_names) - {p.codename for p in permissions}
         if len(missing_permissions) > 0:
             for permission_name in missing_permissions:
                 permission, created = get_or_create_permission(permission_name)
