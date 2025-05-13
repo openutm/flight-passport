@@ -1,11 +1,9 @@
-from __future__ import unicode_literals
-
 import collections
 import re
 
 
 def user_is_authenticated(user):
-    if isinstance(user.is_authenticated, collections.Callable):
+    if isinstance(user.is_authenticated, collections.abc.Callable):
         authenticated = user.is_authenticated()
     else:
         authenticated = user.is_authenticated

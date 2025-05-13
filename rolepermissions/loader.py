@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import inspect
 from importlib import import_module
 from pydoc import locate

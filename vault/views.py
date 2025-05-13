@@ -49,7 +49,7 @@ class ErrorView(TemplateView):
 
 def get_user(request):
     app_tk = request.META["HTTP_AUTHORIZATION"]
-    m = re.search("(Bearer)(\s)(.*)", app_tk)
+    m = re.search(r"(Bearer)(\s)(.*)", app_tk)
 
     app_tk = m.group(3)
 

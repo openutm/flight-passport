@@ -10,7 +10,7 @@ class Command(BaseCommand):
             username = settings.DJANGO_SUPERUSER_USERNAME
             email = settings.DJANGO_SUPERUSER_EMAIL
             password = settings.DJANGO_SUPERUSER_INITIAL_PASSWORD
-            print("Creating account for %s (%s)" % (username, email))
+            print(f"Creating account for {username} ({email})")
             admin = User.objects.create_superuser(email=email, username=username, password=password)
             admin.is_active = True
             admin.is_admin = True

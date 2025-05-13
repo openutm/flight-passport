@@ -38,7 +38,7 @@ Python 3 is required for this and install dependencies using `pip install -r req
 
 ### 3. Create Initial Database
 
-Use `python manage.py migrate` to create the initial database tables locally. It will use the default sqlite.
+Use `python manage.py migrate` to create the initial database tables locally. It will use the default SQLite.
 
 ### 4. Create a Django administrator
 

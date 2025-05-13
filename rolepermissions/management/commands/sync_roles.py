@@ -28,7 +28,7 @@ class Command(BaseCommand):
         for role in roles.RolesManager.get_roles():
             group, created = role.get_or_create_group()
             if created:
-                self.stdout.write("Created Group: %s from Role: %s" % (group.name, role.get_name()))
+                self.stdout.write(f"Created Group: {group.name} from Role: {role.get_name()}")
             # Sync auth.Permission with permissions for this role
             role.get_default_true_permissions()
 
