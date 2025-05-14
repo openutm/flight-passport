@@ -5,7 +5,7 @@ try:
     from urllib.parse import parse_qs, urlparse
 except ImportError:
     from urlparse import parse_qs, urlparse
-
+from django.http import JsonResponse
 from django.conf import settings
 from django.utils.module_loading import import_string
 from jwcrypto import jwk
@@ -151,9 +151,10 @@ class TokenView(views.TokenView):
                 status_code=400,
             )
         except IncorrectAudience:
+            requested_audience = request.POST.get("audience", None)
             return self._build_error_response(
                 "invalid_request",
-                "Incorrect Audience. Please set the appropriate audience in the request.",
+                f"Incorrect audience parameter, you submitted {requested_audience}. Please submit the correct audience assigned to the client.",
                 status_code=400,
             )
         except Exception as e:
@@ -165,7 +166,4 @@ class TokenView(views.TokenView):
 
     @staticmethod
     def _build_error_response(error, error_description, status_code=400):
-        return OAuth2ResponseRedirect(
-            json.dumps({"error": error, "error_description": error_description}),
-            status_code=status_code,
-        )
+        return JsonResponse({"error": error, "error_description": error_description}, status=status_code)
