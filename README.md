@@ -34,7 +34,7 @@ Download the `.passport.env.example` to `.env` and fill in appropriately. Create
 
 ### 2. Install Dependencies
 
-Python 3 is required for this and install dependencies using `pip install -r requirements.txt`.
+Python 3 is required for this and install dependencies using `uv sync`. You will need to install `uv`, see instructions [here](https://docs.astral.sh/uv/#installation)
 
 ### 3. Create Initial Database
 
