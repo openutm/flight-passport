@@ -127,7 +127,7 @@ ACCOUNT_LOGIN_METHODS = {
 }
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_ADAPTER = "authprofiles.adapter.PassportAccountAdapter"
-LOGO_URL = "https://www.openskies.sh/images/logo.svg"
+LOGO_URL = "https://openutm.net/assets/svg-refresh/icon.svg"
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 APPLICATION_NAME = "OpenUTM Flight Passport"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "OpenUTM Flight Passport <noreply@id.openutm.net>")
