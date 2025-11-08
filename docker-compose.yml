@@ -2,7 +2,7 @@ version: "3"
 services:
   db-passport:
     platform: linux/amd64
-    image: postgres:latest
+    image: postgres:17
     ports:
       - "5432:5432"
     restart: unless-stopped
