@@ -62,7 +62,7 @@ Use a API client such as Postman or Insomnia to run a `client_credentials` reque
 
 ### 9. OIDC Grant
 
-You can also implement a login / username password system, for an example see [OIDC Client](https://github.com/openskies-sh/flight_passport_oidc_client).
+You can also implement a login / username password system, for an example see [OIDC Client](https://github.com/openutm-labs/flight_passport_oidc_client).
 
 #### Image credit
 
