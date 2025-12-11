@@ -16,7 +16,7 @@ services:
     env_file:
       - ".env"
     build: .
-    image: openskiessh/flight-passport
+    image: openutm/flight-passport
     command: ./entrypoint.sh
     ports:
       - "9000:9000"
