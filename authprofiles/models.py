@@ -46,3 +46,4 @@ class PassportApplication(AbstractApplication):
     )
     client_class = models.IntegerField(choices=APPLICATION_CLASS_CHOICES, default=0)
     audience = models.ManyToManyField(PassportAPI, related_name="application_audience", blank=True)
+    subject = models.CharField(max_length=140, blank=True, help_text="add a sub claim to the token e.g. OpenUTM")

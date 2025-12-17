@@ -32,7 +32,10 @@ class JWTAuthorizationView(views.AuthorizationView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        if request.GET.get("response_type", None) == "token" and response.status_code == 302:
+        if (
+            request.GET.get("response_type", None) == "token"
+            and response.status_code == 302
+        ):
             url = urlparse(response.url)
             params = parse_qs(url.fragment)
 
@@ -44,7 +47,9 @@ class JWTAuthorizationView(views.AuthorizationView):
                 }
                 jwt = TokenView()._get_access_token_jwt(request, content)
 
-                response = OAuth2ResponseRedirect(f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes)
+                response = OAuth2ResponseRedirect(
+                    f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes
+                )
         return response
 
 
@@ -55,7 +60,9 @@ class TokenView(views.TokenView):
         request_params = request.POST.keys()
 
         token = get_access_token_model().objects.get(token=content["access_token"])
-        extra_data = self._enrich_payload(request, payload_enricher, content, token, request_params)
+        extra_data = self._enrich_payload(
+            request, payload_enricher, content, token, request_params
+        )
 
         payload = generate_payload(issuer, content["expires_in"], **extra_data)
 
@@ -64,8 +71,16 @@ class TokenView(views.TokenView):
 
         return token
 
-    def _enrich_payload(self, request, payload_enricher, content, token, request_params):
+    def _enrich_payload(
+        self, request, payload_enricher, content, token, request_params
+    ):
         extra_data = {}
+
+        # Add the 'sub' claim
+        id_attribute = getattr(settings, "JWT_ID_ATTRIBUTE", None)
+        sub_value = self._generate_sub_claim(token, id_attribute)
+        if sub_value:
+            extra_data["sub"] = sub_value
 
         if payload_enricher:
             fn = import_string(payload_enricher)
@@ -89,9 +104,21 @@ class TokenView(views.TokenView):
 
         extra_data["aud"] = requested_audience
 
-    def _get_id_value(self, token, id_attribute):
+    def _generate_sub_claim(self, token, id_attribute):
+        sub = token.application.subject
+        if sub:
+            return sub
+
         if not id_attribute:
             return None
+        audience = token.application.audience.all().only("identifier")
+        if audience.exists() and audience.count() > 1:
+            pass
+        else:
+            audience_subject_string = audience.first().identifier.split(".")
+            # Join the last two segments of the audience to form the service name
+            service_name = ".".join(audience_subject_string[-2:])
+            return service_name  # Get the service name from audience like service.domain.com
 
         token_user = token.user
         if token_user:
@@ -143,7 +170,9 @@ class TokenView(views.TokenView):
 
         try:
             token_raw = self._get_access_token_jwt(request, content)
-            content["access_token"] = token_raw if isinstance(token_raw, str) else token_raw.decode("utf-8")
+            content["access_token"] = (
+                token_raw if isinstance(token_raw, str) else token_raw.decode("utf-8")
+            )
         except MissingIdAttribute:
             return self._build_error_response(
                 "invalid_request",
@@ -166,4 +195,6 @@ class TokenView(views.TokenView):
 
     @staticmethod
     def _build_error_response(error, error_description, status_code=400):
-        return JsonResponse({"error": error, "error_description": error_description}, status=status_code)
+        return JsonResponse(
+            {"error": error, "error_description": error_description}, status=status_code
+        )

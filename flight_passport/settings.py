@@ -40,8 +40,7 @@ if issuer_domain:
     d = urlparse(issuer_domain)
     full_url = d.scheme + "://" + d.netloc
     ALLOWED_HOSTS = [d.hostname]
-    CSRF_TRUSTED_ORIGINS = [full_url]
-    CSRF_TRUSTED_ORIGINS = [full_url]
+    CSRF_TRUSTED_ORIGINS = [full_url]    
     CORS_ORIGIN_WHITELIST = [full_url]
 
 # Application definition
@@ -176,7 +175,7 @@ JWT_ISSUER = os.environ.get("JWT_ISSUER_NAME", "OpenUTM")
 JWT_ISSUER_DOMAIN = os.environ.get("JWT_ISSUER_DOMAIN", "https://id.openutm.net/")
 JWT_ID_ATTRIBUTE = "email"
 JWT_PRIVATE_KEY_OPENUTM = os.environ.get("OIDC_RSA_PRIVATE_KEY")
-JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
+# JWT_PAYLOAD_ENRICHER = "vault.jwt_utils.payload_enricher"
 SHOW_ADMIN = int(os.environ.get("SHOW_ADMIN", 0))
 
 # Internationalization
