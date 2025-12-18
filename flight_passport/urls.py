@@ -45,8 +45,12 @@ urlpatterns += [
         oauth_views.ConnectDiscoveryInfoView.as_view(),
         name="oidc-connect-discovery-info",
     ),
-    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),  # Default non-JWT views standard OAUTH lib.
-    path("oauth/", include("oauth2_provider_jwt.urls", namespace="oauth2_provider_jwt")),  # for JWT Based OAUTH
+    path(
+        "o/", include("oauth2_provider.urls", namespace="oauth2_provider")
+    ),  # Default non-JWT views standard OAUTH lib.
+    path(
+        "oauth/", include("oauth2_provider_jwt.urls", namespace="oauth2_provider_jwt")
+    ),  # for JWT Based OAUTH
     path(
         "accounts/email/",
         default_views.page_not_found,
@@ -54,7 +58,16 @@ urlpatterns += [
     ),
     path("accounts/", include("allauth.urls")),
     path("profile/", vault_views.profile, name="profile"),
-    re_path(r"^\.well-known/jwks.json$", oauth_views.JwksInfoView.as_view(), name="jwks-info"),
+    re_path(
+        r"^\.well-known/jwks.json$",
+        oauth_views.JwksInfoView.as_view(),
+        name="jwks-info",
+    ),
+    re_path(
+        r"^\.well-known/openid-configuration$",
+        oauth_views.ConnectDiscoveryInfoView.as_view(),
+        name="base-oidc-connect-discovery-info",
+    ),
     path("", vault_views.HomePage.as_view(), name="home"),
     path("userinfo/", vault_views.get_user, {}, "current_user"),
 ]
