@@ -3,7 +3,7 @@
 source .venv/bin/activate
 
 echo Waiting for DBs...
-if ! wait-for-it --service db-passport:5432; then
+if ! wait-for-it --service ${POSTGRES_HOST:-db-passport}:${POSTGRES_PORT:-5432}; then
     exit
 fi
 
