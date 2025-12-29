@@ -5,8 +5,8 @@ try:
     from urllib.parse import parse_qs, urlparse
 except ImportError:
     from urlparse import parse_qs, urlparse
-from django.http import JsonResponse
 from django.conf import settings
+from django.http import JsonResponse
 from django.utils.module_loading import import_string
 from jwcrypto import jwk
 from oauth2_provider import views
@@ -32,10 +32,7 @@ class JWTAuthorizationView(views.AuthorizationView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        if (
-            request.GET.get("response_type", None) == "token"
-            and response.status_code == 302
-        ):
+        if request.GET.get("response_type", None) == "token" and response.status_code == 302:
             url = urlparse(response.url)
             params = parse_qs(url.fragment)
 
@@ -47,9 +44,7 @@ class JWTAuthorizationView(views.AuthorizationView):
                 }
                 jwt = TokenView()._get_access_token_jwt(request, content)
 
-                response = OAuth2ResponseRedirect(
-                    f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes
-                )
+                response = OAuth2ResponseRedirect(f"{response.url}&access_token_jwt={jwt}", response.allowed_schemes)
         return response
 
 
@@ -60,9 +55,7 @@ class TokenView(views.TokenView):
         request_params = request.POST.keys()
 
         token = get_access_token_model().objects.get(token=content["access_token"])
-        extra_data = self._enrich_payload(
-            request, payload_enricher, content, token, request_params
-        )
+        extra_data = self._enrich_payload(request, payload_enricher, content, token, request_params)
 
         payload = generate_payload(issuer, content["expires_in"], **extra_data)
 
@@ -71,9 +64,7 @@ class TokenView(views.TokenView):
 
         return token
 
-    def _enrich_payload(
-        self, request, payload_enricher, content, token, request_params
-    ):
+    def _enrich_payload(self, request, payload_enricher, content, token, request_params):
         extra_data = {}
 
         # Add the 'sub' claim
@@ -170,9 +161,7 @@ class TokenView(views.TokenView):
 
         try:
             token_raw = self._get_access_token_jwt(request, content)
-            content["access_token"] = (
-                token_raw if isinstance(token_raw, str) else token_raw.decode("utf-8")
-            )
+            content["access_token"] = token_raw if isinstance(token_raw, str) else token_raw.decode("utf-8")
         except MissingIdAttribute:
             return self._build_error_response(
                 "invalid_request",
@@ -195,6 +184,4 @@ class TokenView(views.TokenView):
 
     @staticmethod
     def _build_error_response(error, error_description, status_code=400):
-        return JsonResponse(
-            {"error": error, "error_description": error_description}, status=status_code
-        )
+        return JsonResponse({"error": error, "error_description": error_description}, status=status_code)

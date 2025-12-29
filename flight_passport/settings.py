@@ -40,7 +40,7 @@ if issuer_domain:
     d = urlparse(issuer_domain)
     full_url = d.scheme + "://" + d.netloc
     ALLOWED_HOSTS = [d.hostname]
-    CSRF_TRUSTED_ORIGINS = [full_url]    
+    CSRF_TRUSTED_ORIGINS = [full_url]
     CORS_ORIGIN_WHITELIST = [full_url]
 
 # Application definition
