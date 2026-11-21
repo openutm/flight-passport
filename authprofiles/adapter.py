@@ -14,9 +14,11 @@ if ENV_FILE:
 
 class PassportAccountAdapter(DefaultAccountAdapter):
     def clean_email(self, email):
-        DOMAIN_WHITELIST = env.get(constants.DOMAIN_WHITELIST)
+        domain_whitelist = env.get(constants.DOMAIN_WHITELIST)
+        if domain_whitelist is None:
+            return email
         domain = email.split("@")[1]
-        white_listed_domain = [i for i in DOMAIN_WHITELIST.split(";")]
+        white_listed_domain = [i for i in domain_whitelist.split(";")]
 
         if domain in white_listed_domain:
             return email
